@@ -42,6 +42,29 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
+        public bool IsErrorVisble
+        {
+            get 
+            { 
+                return !string.IsNullOrWhiteSpace(ErrorMessage); 
+            }
+        }
+
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set 
+            { 
+                _errorMessage = value; 
+                NotifyOfPropertyChange(() => ErrorMessage);
+                NotifyOfPropertyChange(() => IsErrorVisble);
+
+            }
+        }
+
+
         public bool CanLogin
         {
             get
@@ -58,11 +81,12 @@ namespace StoreManagerWindowsUI.ViewModels
         {
             try
             {
+                ErrorMessage = string.Empty;
                 var result = await _apiHelper.AuthenticateAsync(UserName, Password);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                ErrorMessage = ex.Message;
             }        
         }
 
