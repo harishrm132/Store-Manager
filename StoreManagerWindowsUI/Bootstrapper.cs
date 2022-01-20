@@ -32,7 +32,8 @@ namespace StoreManagerWindowsUI
 
             _container
                 .Singleton<IWindowManager, WindowManager>()
-                .Singleton<IEventAggregator, EventAggregator>();
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<IAPIHelper, APIHelper>();
 
             //wire viewmodel that connect to views - reflection
             GetType().Assembly.GetTypes()

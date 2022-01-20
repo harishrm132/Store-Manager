@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using StoreManagerWindowsUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,12 @@ namespace StoreManagerWindowsUI.ViewModels
     {
         private string _userName;
         private string _password;
+        private IAPIHelper _apiHelper;
+
+        public LoginViewModel(IAPIHelper apiHelper)
+        {
+            _apiHelper = apiHelper;
+        }
 
         public string UserName
         {
@@ -47,8 +54,16 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
         
-        public void Login()
+        public async Task Login()
         {
+            try
+            {
+                var result = await _apiHelper.AuthenticateAsync(UserName, Password);
+            }
+            catch (Exception)
+            {
+                throw;
+            }        
         }
 
     }
