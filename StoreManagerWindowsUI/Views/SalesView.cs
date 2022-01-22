@@ -18,9 +18,9 @@ namespace StoreManagerWindowsUI.Views
     /// <summary>
     /// Interaction logic for SalesVIew.xaml
     /// </summary>
-    public partial class SalesVIew : UserControl
+    public partial class SalesView : UserControl
     {
-        public SalesVIew()
+        public SalesView()
         {
             InitializeComponent();
         }

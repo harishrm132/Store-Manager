@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="StoreManagerWindowsUI.Views.SalesVIew"
+﻿<UserControl x:Class="StoreManagerWindowsUI.Views.SalesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -51,22 +51,22 @@
         <ListBox x:Name="Cart" Grid.Row="2" Grid.Column="2" Grid.RowSpan="3" 
                  MinHeight="200" MinWidth="100" />
 
-        <DockPanel Grid.Row="3" Grid.Column="2">
+        <DockPanel Grid.Row="5" Grid.Column="2">
             <TextBlock Text="SubTotal: " Margin=" 0 0 15 0" />
             <TextBlock x:Name="SubTotal" Text="$0.00" TextAlignment="Right" />
         </DockPanel>
 
-        <DockPanel Grid.Row="4" Grid.Column="2">
+        <DockPanel Grid.Row="6" Grid.Column="2">
             <TextBlock Text="Tax: " />
             <TextBlock x:Name="Tax" Text="$0.00" TextAlignment="Right" />
         </DockPanel>
 
-        <DockPanel Grid.Row="5" Grid.Column="2">
+        <DockPanel Grid.Row="7" Grid.Column="2">
             <TextBlock Text="Total: " />
             <TextBlock x:Name="Total" Text="$0.00" TextAlignment="Right" />
         </DockPanel>
 
-        <Button x:Name="CheckOut" Grid.Row="6" Grid.Column="2" Content="Check Out"
+        <Button x:Name="CheckOut" Grid.Row="8" Grid.Column="2" Content="Check Out"
                 Margin="0 20 0 0" Padding="5" />
 
     </Grid>

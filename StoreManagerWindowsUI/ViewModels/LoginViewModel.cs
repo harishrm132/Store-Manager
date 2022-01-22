@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using StoreManagerWindowsUI.EventModels;
 using StoreManagerWindowsUI.Helpers;
 using StoreManagerWindowsUI.Library.Helpers;
 using System;
@@ -15,10 +16,12 @@ namespace StoreManagerWindowsUI.ViewModels
         private string _userName;
         private string _password;
         private IAPIHelper _apiHelper;
+        private IEventAggregator _eventAggregator;
 
-        public LoginViewModel(IAPIHelper apiHelper)
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator eventAggregator)
         {
             _apiHelper = apiHelper;
+            _eventAggregator = eventAggregator;
         }
 
         public string UserName
@@ -26,7 +29,7 @@ namespace StoreManagerWindowsUI.ViewModels
             get { return _userName; }
             set 
             { 
-                _userName = value;
+                _userName = value; //TODO - Handles Email Address Change Over Time
                 NotifyOfPropertyChange(() => UserName);
                 NotifyOfPropertyChange(() => CanLogin);
             }
@@ -46,8 +49,8 @@ namespace StoreManagerWindowsUI.ViewModels
         public bool IsErrorVisble
         {
             get 
-            { 
-                return !string.IsNullOrWhiteSpace(ErrorMessage); 
+            {
+                return !string.IsNullOrWhiteSpace(ErrorMessage);
             }
         }
 
@@ -87,6 +90,9 @@ namespace StoreManagerWindowsUI.ViewModels
 
                 //Capture More Information about user
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
+                //Raise an event - Differ Event from other calls
+                _eventAggregator.PublishOnUIThread(new LogOnEvent());
             }
             catch (Exception ex)
             {
