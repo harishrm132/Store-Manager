@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
 using StoreManagerWindowsUI.Helpers;
+using StoreManagerWindowsUI.Library.Helpers;
+using StoreManagerWindowsUI.Library.Models;
 using StoreManagerWindowsUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -30,10 +32,12 @@ namespace StoreManagerWindowsUI
         {
             _container.Instance(_container);
 
+            //Use Dependency Injection using simple container of Caliburn Micro
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
-                .Singleton<IAPIHelper, APIHelper>();
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IAPIHelper, APIHelper>(); 
 
             //wire viewmodel that connect to views - reflection
             GetType().Assembly.GetTypes()

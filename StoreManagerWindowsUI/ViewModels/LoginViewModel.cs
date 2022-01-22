@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using StoreManagerWindowsUI.Helpers;
+using StoreManagerWindowsUI.Library.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +84,9 @@ namespace StoreManagerWindowsUI.ViewModels
             {
                 ErrorMessage = string.Empty;
                 var result = await _apiHelper.AuthenticateAsync(UserName, Password);
+
+                //Capture More Information about user
+                await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
             }
             catch (Exception ex)
             {

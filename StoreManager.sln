@@ -9,6 +9,10 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "StoreData", "StoreData\Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManagerWindowsUI", "StoreManagerWindowsUI\StoreManagerWindowsUI.csproj", "{98482F55-B4B5-46D6-8E14-056625834A79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreDataManager.Library", "StoreDataManager.Library\StoreDataManager.Library.csproj", "{5362F665-F305-4633-8A88-A237F9F13800}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManagerWindowsUI.Library", "StoreManagerWindowsUI.Library\StoreManagerWindowsUI.Library.csproj", "{2B617668-A34E-47D6-8428-434B5A0BCACF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{98482F55-B4B5-46D6-8E14-056625834A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98482F55-B4B5-46D6-8E14-056625834A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98482F55-B4B5-46D6-8E14-056625834A79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5362F665-F305-4633-8A88-A237F9F13800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5362F665-F305-4633-8A88-A237F9F13800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5362F665-F305-4633-8A88-A237F9F13800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5362F665-F305-4633-8A88-A237F9F13800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B617668-A34E-47D6-8428-434B5A0BCACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B617668-A34E-47D6-8428-434B5A0BCACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B617668-A34E-47D6-8428-434B5A0BCACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B617668-A34E-47D6-8428-434B5A0BCACF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
