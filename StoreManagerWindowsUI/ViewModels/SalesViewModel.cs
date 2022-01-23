@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using StoreManagerWindowsUI.Library.Api;
+using StoreManagerWindowsUI.Library.Helpers;
 using StoreManagerWindowsUI.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace StoreManagerWindowsUI.ViewModels
     {
 
         private IProductEndPoint _productEndPoint;
+        private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndPoint productEndPoint)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -86,32 +89,50 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public string SubTotal
         {
-            get             
+            get
             {
-                decimal output = 0;
-                foreach (var item in Cart)
-                {
-                    output += (item.Product.RetailPrice * item.QuantityInCart);
-                }
-                return output.ToString("C"); 
+                return CalcSubTotal().ToString("C");
             }
+        }
+
+        private decimal CalcSubTotal()
+        {
+            decimal output = 0;
+            foreach (var item in Cart)
+            {
+                output += (item.Product.RetailPrice * item.QuantityInCart);
+            }
+            return output;
         }
 
         public string Tax
         {
-            get             
-            { 
-                //TODO  - Calculation
-                return "$0.00"; 
+            get
+            {
+                return CalcTax().ToString("C");
             }
+        }
+
+        private decimal CalcTax()
+        {
+            decimal output = 0;
+            decimal taxRate = _configHelper.GetTaxRate()/100;
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    output += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+                }
+            }
+
+            return output;
         }
 
         public string Total
         {
             get             
             { 
-                //TODO  - Calculation
-                return "$0.00"; 
+                return (CalcSubTotal() + CalcTax()).ToString("C"); 
             }
         }
 
@@ -151,6 +172,8 @@ namespace StoreManagerWindowsUI.ViewModels
             ItemQuantity = 1;
 
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
         
         public bool CanRemoveFromCart
@@ -165,6 +188,8 @@ namespace StoreManagerWindowsUI.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public void CheckOut()
