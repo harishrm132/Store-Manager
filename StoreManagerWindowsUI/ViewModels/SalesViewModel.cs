@@ -163,7 +163,7 @@ namespace StoreManagerWindowsUI.ViewModels
             }
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
-
+            //TODO - Update product Box once the item is Added to Cart
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
