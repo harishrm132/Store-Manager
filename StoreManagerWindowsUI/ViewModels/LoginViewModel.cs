@@ -24,7 +24,7 @@ namespace StoreManagerWindowsUI.ViewModels
             _eventAggregator = eventAggregator;
 
             #if DEBUG
-                _userName = "harishrm132@gmail.com";
+                _userName = "test@gmil.com";
                 _password = "Password@123";
             #endif
         }
