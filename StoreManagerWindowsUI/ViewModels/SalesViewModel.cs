@@ -44,9 +44,23 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
-        private BindingList<ProductModel> _cart;
+        private ProductModel _selectedProduct;
 
-        public BindingList<ProductModel> Cart
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set 
+            { 
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+
+        private BindingList<CartModel> _cart = new BindingList<CartModel>();
+
+        public BindingList<CartModel> Cart
         {
             get { return _cart; }
             set 
@@ -57,7 +71,7 @@ namespace StoreManagerWindowsUI.ViewModels
         }
 
 
-        private int _itemQuantity;
+        private int _itemQuantity = 1;
 
         public int ItemQuantity
         {
@@ -66,15 +80,20 @@ namespace StoreManagerWindowsUI.ViewModels
             { 
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
         public string SubTotal
         {
             get             
-            { 
-                //TODO  - Calculation
-                return "$0.00"; 
+            {
+                decimal output = 0;
+                foreach (var item in Cart)
+                {
+                    output += (item.Product.RetailPrice * item.QuantityInCart);
+                }
+                return output.ToString("C"); 
             }
         }
 
@@ -101,14 +120,37 @@ namespace StoreManagerWindowsUI.ViewModels
         { 
             get 
             {
-                //TODO - Make Sure Sometyhing Selected & have Items
-                return true;
+                //Make Sure Something Selected & have Item Quantity
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    return true;
+                }
+                return false;
             } 
         }
 
         public void AddToCart()
         {
+            CartModel extItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            if (extItem != null)
+            {
+                extItem.QuantityInCart += ItemQuantity;
+                //TODO - Hack so find the better way for refreshing the cart
+                Cart.Remove(extItem); Cart.Add(extItem);
+            }
+            else
+            {
+                CartModel item = new CartModel
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
 
+            NotifyOfPropertyChange(() => SubTotal);
         }
         
         public bool CanRemoveFromCart
@@ -122,7 +164,7 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public void RemoveFromCart()
         {
-
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public void CheckOut()

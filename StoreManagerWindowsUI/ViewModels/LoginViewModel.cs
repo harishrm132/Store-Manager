@@ -22,6 +22,11 @@ namespace StoreManagerWindowsUI.ViewModels
         {
             _apiHelper = apiHelper;
             _eventAggregator = eventAggregator;
+
+            #if DEBUG
+                _userName = "harishrm132@gmail.com";
+                _password = "Password@123";
+            #endif
         }
 
         public string UserName
