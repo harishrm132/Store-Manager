@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using StoreManagerWindowsUI.Helpers;
+using StoreManagerWindowsUI.Library.Api;
 using StoreManagerWindowsUI.Library.Helpers;
 using StoreManagerWindowsUI.Library.Models;
 using StoreManagerWindowsUI.ViewModels;
@@ -30,7 +31,8 @@ namespace StoreManagerWindowsUI
 
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndPoint, ProductEndPoint>();
 
             //Use Dependency Injection using simple container of Caliburn Micro
             _container

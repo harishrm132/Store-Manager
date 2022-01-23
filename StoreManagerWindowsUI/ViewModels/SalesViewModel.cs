@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using StoreManagerWindowsUI.Library.Api;
+using StoreManagerWindowsUI.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,9 +12,29 @@ namespace StoreManagerWindowsUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private BindingList<string> _products;
 
-        public BindingList<string> Products
+        private IProductEndPoint _productEndPoint;
+
+        public SalesViewModel(IProductEndPoint productEndPoint)
+        {
+            _productEndPoint = productEndPoint;
+        }
+
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        private async Task LoadProducts()
+        {
+            var productlist = await _productEndPoint.GetAll();
+            Products = new BindingList<ProductModel>(productlist);
+        }
+
+        private BindingList<ProductModel> _products;
+
+        public BindingList<ProductModel> Products
         {
             get { return _products; }
             set 
@@ -22,9 +44,9 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
+        private BindingList<ProductModel> _cart;
 
-        public BindingList<string> Cart
+        public BindingList<ProductModel> Cart
         {
             get { return _cart; }
             set 
@@ -75,7 +97,7 @@ namespace StoreManagerWindowsUI.ViewModels
         }
 
 
-        public bool CanAddtoCart 
+        public bool CanAddToCart
         { 
             get 
             {
@@ -84,7 +106,7 @@ namespace StoreManagerWindowsUI.ViewModels
             } 
         }
 
-        public void AddtoCart()
+        public void AddToCart()
         {
 
         }

@@ -14,6 +14,7 @@ namespace StoreDataManager.Library.Internal.DataAccess
     {
         public string GetConnectionString(string name)
         {
+            //TODO - Create a constant for Connection String Name to use Everywhere
             return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
 
