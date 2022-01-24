@@ -16,11 +16,13 @@ namespace StoreManagerWindowsUI.ViewModels
 
         private IProductEndPoint _productEndPoint;
         private IConfigHelper _configHelper;
+        private ISaleEndPoint _saleEndPoint;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper, ISaleEndPoint saleEndPoint)
         {
             _productEndPoint = productEndPoint;
             _configHelper = configHelper;
+            _saleEndPoint = saleEndPoint;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -167,14 +169,18 @@ namespace StoreManagerWindowsUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
         
         public bool CanRemoveFromCart
         {
             get
             {
-                //TODO - Make Sure Sometyhing Selected & have Items
-                return true;
+                if (Cart.Count > 0)
+                {
+                    return true;
+                }
+                return false; 
             } 
         }
 
@@ -183,11 +189,35 @@ namespace StoreManagerWindowsUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
-        public void CheckOut()
+        public bool CanCheckOut
         {
-            //TODO - Make sure Soem thing in Cart
+            get
+            {
+                if (Cart.Count > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public async void CheckOut()
+        {
+            //TODO - Make sure Some thing in Cart / Sale Model & Send to Api
+            SaleModel sale = new SaleModel();
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            await _saleEndPoint.PostSale(sale);
         }
     }
 }

@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StoreManagerWindowsUI.Library.Helpers
+namespace StoreDataManager.Library
 {
-    //TODO - Move this From Config to the API
-    public class ConfigHelper : IConfigHelper
+    public class ConfigHelper
     {
-        public decimal GetTaxRate()
+        public static decimal GetTaxRate()
         {
             string rateText = ConfigurationManager.AppSettings["taxRate"];
             bool IsValid = decimal.TryParse(rateText, out decimal output);
@@ -21,4 +20,5 @@ namespace StoreManagerWindowsUI.Library.Helpers
             return output;
         }
     }
+
 }

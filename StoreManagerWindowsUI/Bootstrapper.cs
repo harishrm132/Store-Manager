@@ -32,7 +32,8 @@ namespace StoreManagerWindowsUI
         protected override void Configure()
         {
             _container.Instance(_container)
-                .PerRequest<IProductEndPoint, ProductEndPoint>();
+                .PerRequest<IProductEndPoint, ProductEndPoint>()
+                .PerRequest<ISaleEndPoint, SaleEndPoint>();
 
             //Use Dependency Injection using simple container of Caliburn Micro
             _container
