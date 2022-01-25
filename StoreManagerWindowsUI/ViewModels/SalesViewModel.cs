@@ -181,7 +181,7 @@ namespace StoreManagerWindowsUI.ViewModels
             }
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
-            //TODO - Update product Box once the item is Added to Cart
+            //Update product Box once the item is Added to Cart
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
@@ -233,7 +233,6 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public async void CheckOut()
         {
-            //TODO - Make sure Some thing in Cart / Sale Model & Send to Api
             SaleModel sale = new SaleModel();
             foreach (var item in Cart)
             {
@@ -245,6 +244,21 @@ namespace StoreManagerWindowsUI.ViewModels
             }
 
             await _saleEndPoint.PostSale(sale);
+
+            //Reset
+            await ResetSalesViewModel();
+        }
+
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartDisplayModel>();
+            //TODO - add Clearing cart item if doesn't happen
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
     }
 }
