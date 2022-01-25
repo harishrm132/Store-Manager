@@ -192,9 +192,8 @@ namespace StoreManagerWindowsUI.ViewModels
         {
             get
             {
-                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+                if (SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0)
                 {
-                    //TODO - Is Quantity in stock or Quantity in cart need to be checked?
                     return true;
                 }
                 return false; 
@@ -217,6 +216,7 @@ namespace StoreManagerWindowsUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => CanCheckOut);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
 
         public bool CanCheckOut
