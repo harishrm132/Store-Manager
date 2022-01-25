@@ -80,6 +80,19 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
+        private CartDisplayModel _selectedCartItem;
+
+        public CartDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set 
+            { 
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
+            }
+        }
+
 
         private int _itemQuantity = 1;
 
@@ -179,8 +192,9 @@ namespace StoreManagerWindowsUI.ViewModels
         {
             get
             {
-                if (Cart.Count > 0)
+                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
                 {
+                    //TODO - Is Quantity in stock or Quantity in cart need to be checked?
                     return true;
                 }
                 return false; 
@@ -189,6 +203,16 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public void RemoveFromCart()
         {
+            SelectedCartItem.Product.QuantityInStock += 1;
+            if(SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.QuantityInCart -= 1;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
+
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
