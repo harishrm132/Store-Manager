@@ -1,8 +1,10 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using StoreManagerWindowsUI.Helpers;
 using StoreManagerWindowsUI.Library.Api;
 using StoreManagerWindowsUI.Library.Helpers;
 using StoreManagerWindowsUI.Library.Models;
+using StoreManagerWindowsUI.Models;
 using StoreManagerWindowsUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,8 +31,22 @@ namespace StoreManagerWindowsUI
                 "PasswordChanged");
         }
 
+        private IMapper ConfigureAutoMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartModel, CartDisplayModel>();
+            });
+            var mapper = config.CreateMapper();
+            return mapper;
+        }
+
         protected override void Configure()
         {
+           
+            _container.Instance(ConfigureAutoMapper());
+
             _container.Instance(_container)
                 .PerRequest<IProductEndPoint, ProductEndPoint>()
                 .PerRequest<ISaleEndPoint, SaleEndPoint>();

@@ -1,7 +1,9 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using StoreManagerWindowsUI.Library.Api;
 using StoreManagerWindowsUI.Library.Helpers;
 using StoreManagerWindowsUI.Library.Models;
+using StoreManagerWindowsUI.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +19,14 @@ namespace StoreManagerWindowsUI.ViewModels
         private IProductEndPoint _productEndPoint;
         private IConfigHelper _configHelper;
         private ISaleEndPoint _saleEndPoint;
+        private IMapper _mapper;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper, ISaleEndPoint saleEndPoint)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper, ISaleEndPoint saleEndPoint, IMapper mapper)
         {
             _productEndPoint = productEndPoint;
             _configHelper = configHelper;
             _saleEndPoint = saleEndPoint;
+            _mapper = mapper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -34,12 +38,13 @@ namespace StoreManagerWindowsUI.ViewModels
         private async Task LoadProducts()
         {
             var productlist = await _productEndPoint.GetAll();
-            Products = new BindingList<ProductModel>(productlist);
+            var products = _mapper.Map<List<ProductDisplayModel>>(productlist);
+            Products = new BindingList<ProductDisplayModel>(products);
         }
 
-        private BindingList<ProductModel> _products;
+        private BindingList<ProductDisplayModel> _products;
 
-        public BindingList<ProductModel> Products
+        public BindingList<ProductDisplayModel> Products
         {
             get { return _products; }
             set 
@@ -49,9 +54,9 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
-        private ProductModel _selectedProduct;
+        private ProductDisplayModel _selectedProduct;
 
-        public ProductModel SelectedProduct
+        public ProductDisplayModel SelectedProduct
         {
             get { return _selectedProduct; }
             set 
@@ -63,9 +68,9 @@ namespace StoreManagerWindowsUI.ViewModels
         }
 
 
-        private BindingList<CartModel> _cart = new BindingList<CartModel>();
+        private BindingList<CartDisplayModel> _cart = new BindingList<CartDisplayModel>();
 
-        public BindingList<CartModel> Cart
+        public BindingList<CartDisplayModel> Cart
         {
             get { return _cart; }
             set 
@@ -147,16 +152,14 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public void AddToCart()
         {
-            CartModel extItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            CartDisplayModel extItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
             if (extItem != null)
             {
                 extItem.QuantityInCart += ItemQuantity;
-                //TODO - Hack so find the better way for refreshing the cart
-                Cart.Remove(extItem); Cart.Add(extItem);
             }
             else
             {
-                CartModel item = new CartModel
+                CartDisplayModel item = new CartDisplayModel
                 {
                     Product = SelectedProduct,
                     QuantityInCart = ItemQuantity
