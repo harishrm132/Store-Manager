@@ -70,7 +70,7 @@ namespace StoreDataManager.Library.DataAccess
                         //Save the sale detail model
                         sql.SaveDataInTransaction<SaleDetailDBModel>("dbo.spSaleDetail_Insert", item);
                     }
-                    //sql.CommitTransaction();
+                    sql.CommitTransaction();
                 }
                 catch
                 {
