@@ -7,9 +7,11 @@ using StoreManagerWindowsUI.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace StoreManagerWindowsUI.ViewModels
 {
@@ -20,19 +22,40 @@ namespace StoreManagerWindowsUI.ViewModels
         private IConfigHelper _configHelper;
         private ISaleEndPoint _saleEndPoint;
         private IMapper _mapper;
+        private readonly StatusInfoViewModel _status;
+        private readonly IWindowManager _window;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper, ISaleEndPoint saleEndPoint, IMapper mapper)
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper, ISaleEndPoint saleEndPoint, IMapper mapper,
+            StatusInfoViewModel status, IWindowManager window)
         {
             _productEndPoint = productEndPoint;
             _configHelper = configHelper;
             _saleEndPoint = saleEndPoint;
             _mapper = mapper;
+            _status = status;
+            _window = window;
         }
 
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+            try
+            {
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                //TODO - Make message box better
+                dynamic settings = new ExpandoObject();
+                settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                settings.ResizeMode = ResizeMode.NoResize;
+                settings.Title = "System Error";
+
+                _status.UpdateMessage("Exception", ex.Message);
+                _window.ShowDialog(_status, null, settings);
+
+                TryClose();
+            }
         }
 
         private async Task LoadProducts()
