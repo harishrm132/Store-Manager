@@ -52,20 +52,34 @@ namespace StoreDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             //Save the sale model
-            SqlDataAccess sql = new SqlDataAccess();
-            sql.SaveData<SaleDBModel>("dbo.spSale_Insert", sale, "StoreData");
-
-            //Get the ID from Sale Model
-            sale.Id =  sql.LoadData<int, dynamic>("dbo.spSale_Lookup", 
-                new { CashierId = sale.CashierId, SaleDate = sale.SaleDate  }, "StoreData").FirstOrDefault();
-
-            //Finish filling in sale details model
-            foreach (var item in details)
+            using (SqlDataAccess sql = new SqlDataAccess())
             {
-                item.SaleId = sale.Id;
-                //Save the sale detail model
-                sql.SaveData<SaleDetailDBModel>("dbo.spSaleDetail_Insert", item, "StoreData");
+                try
+                {
+                    sql.StartTransaction("StoreData");
+                    sql.SaveDataInTransaction<SaleDBModel>("dbo.spSale_Insert", sale);
+
+                    //Get the ID from Sale Model
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup",
+                        new { CashierId = sale.CashierId, SaleDate = sale.SaleDate }).FirstOrDefault();
+
+                    //Finish filling in sale details model
+                    foreach (var item in details)
+                    {
+                        item.SaleId = sale.Id;
+                        //Save the sale detail model
+                        sql.SaveDataInTransaction<SaleDetailDBModel>("dbo.spSaleDetail_Insert", item);
+                    }
+                    //sql.CommitTransaction();
+                }
+                catch
+                {
+                    sql.RollBackTransaction();
+                    throw;
+                }
             }
+            
+            
         }
     }
 }
