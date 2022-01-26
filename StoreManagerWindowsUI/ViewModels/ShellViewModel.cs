@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using StoreManagerWindowsUI.EventModels;
+using StoreManagerWindowsUI.Library.Helpers;
 using StoreManagerWindowsUI.Library.Models;
 
 namespace StoreManagerWindowsUI.ViewModels
@@ -14,12 +15,14 @@ namespace StoreManagerWindowsUI.ViewModels
         private SalesViewModel _salesVM;
         private IEventAggregator _events;
         private ILoggedInUserModel _user;
+        private IAPIHelper _apiHelper;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user)
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user, IAPIHelper apiHelper)
         {
             _events = events;
             _salesVM = salesVM;
             _user = user;
+            _apiHelper = apiHelper;
 
             //Subscribe to Events
             _events.Subscribe(this);
@@ -45,7 +48,8 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public void LogOut()
         {
-            _user.LogOff();
+            _user.ResetUser();
+            _apiHelper.LogOffUser();
             ActivateItem(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }

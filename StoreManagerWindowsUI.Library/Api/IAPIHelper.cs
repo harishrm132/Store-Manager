@@ -8,6 +8,8 @@ namespace StoreManagerWindowsUI.Library.Helpers
     {
         HttpClient ApiClient { get; }
 
+        void LogOffUser();
+
         Task<AuthenticatedUser> AuthenticateAsync(string userName, string password);
 
         Task GetLoggedInUserInfo(string token);

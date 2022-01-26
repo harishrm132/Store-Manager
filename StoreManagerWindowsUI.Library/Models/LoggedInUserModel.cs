@@ -15,7 +15,7 @@ namespace StoreManagerWindowsUI.Library.Models
         public string EmailAddress { get; set; }
         public DateTime CreatedDate { get; set; }
 
-        public void LogOff()
+        public void ResetUser()
         {
             Token = "";
             Id = "";
