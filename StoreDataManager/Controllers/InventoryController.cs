@@ -12,6 +12,7 @@ namespace StoreDataManager.Controllers
     [Authorize]
     public class InventoryController : ApiController
     {
+        [Authorize(Roles = "Manager,Admin")]
         [HttpGet]
         public List<InventoryModel> Get()
         {
@@ -19,6 +20,8 @@ namespace StoreDataManager.Controllers
             return data.GetInvetory();
         }
 
+        //[Authorize(Roles = "WarehouseWorker")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public void Post(InventoryModel item)
         {

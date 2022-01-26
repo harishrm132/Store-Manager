@@ -11,10 +11,10 @@ using System.Web.Http;
 
 namespace StoreDataManager.Controllers
 {
-    [Authorize]
+    [Authorize()]
     public class SaleController : ApiController
     {
-
+        [Authorize(Roles = "Cashier")]
         [HttpPost]
         public void Post(SaleModel sale)
         {
@@ -23,6 +23,7 @@ namespace StoreDataManager.Controllers
             saleData.SaveSale(sale, userId);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
         {
