@@ -10,7 +10,6 @@ namespace StoreDataManager.Library.DataAccess
 {
     public class SaleData
     {
-
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             //TODO - Make this method Better
@@ -78,8 +77,12 @@ namespace StoreDataManager.Library.DataAccess
                     throw;
                 }
             }
-            
-            
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+            return sql.LoadData<SaleReportModel, dynamic>("[dbo].[spSale_SaleReport]", new { }, "StoreData");
         }
     }
 }

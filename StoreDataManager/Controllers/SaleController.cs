@@ -14,12 +14,20 @@ namespace StoreDataManager.Controllers
     [Authorize]
     public class SaleController : ApiController
     {
+
         [HttpPost]
         public void Post(SaleModel sale)
         {
             string userId = RequestContext.Principal.Identity.GetUserId();
             SaleData saleData = new SaleData();
             saleData.SaveSale(sale, userId);
+        }
+
+        [Route("GetSalesReport")]
+        public List<SaleReportModel> GetSalesReport()
+        {
+            SaleData data = new SaleData();
+            return data.GetSaleReport();
         }
     }
 }
