@@ -30,6 +30,81 @@ namespace StoreManagerWindowsUI.ViewModels
             }
         }
 
+        private UserModel _selectedUser;
+
+        public UserModel SelectedUser
+        {
+            get { return _selectedUser; }
+            set 
+            { 
+                _selectedUser = value;
+                SelectedUserName = value.Email;
+                UserRoles.Clear();
+                UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
+                LoadRoles();
+                NotifyOfPropertyChange(() => SelectedUser);
+            }
+        }
+
+        private string _selectedUserName;
+
+        public string SelectedUserName
+        {
+            get { return _selectedUserName; }
+            set 
+            { 
+                _selectedUserName = value;
+                NotifyOfPropertyChange(() => SelectedUserName);
+            }
+        }
+
+        private BindingList<string> _userRoles = new BindingList<string>();
+
+        public BindingList<string> UserRoles
+        {
+            get { return _userRoles; }
+            set 
+            { 
+                _userRoles = value;
+                NotifyOfPropertyChange(() => UserRoles);
+            }
+        }
+
+        private BindingList<string> _avaliableRoles = new BindingList<string>();
+
+        public BindingList<string> AvaliableRoles
+        {
+            get { return _avaliableRoles; }
+            set 
+            { 
+                _avaliableRoles = value;
+                NotifyOfPropertyChange(() => AvaliableRoles);
+            }
+        }
+
+        private string _selectedRoleToRemove;
+
+        public string SelectedRoleToRemove
+        {
+            get { return _selectedRoleToRemove; }
+            set 
+            { 
+                _selectedRoleToRemove = value;
+                NotifyOfPropertyChange(() => SelectedRoleToRemove);
+            }
+        }
+
+        private string _selectedAvaliableRole;
+
+        public string SelectedAvaliableRole
+        {
+            get { return _selectedAvaliableRole; }
+            set 
+            { 
+                _selectedAvaliableRole = value;
+                NotifyOfPropertyChange(() => SelectedAvaliableRole);
+            }
+        }
 
         public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndPoint userEndPoint)
         {
@@ -66,5 +141,30 @@ namespace StoreManagerWindowsUI.ViewModels
             Users = new BindingList<UserModel>(userlist);
         }
 
+        private async Task LoadRoles()
+        {
+            var roles = await _userEndPoint.GetAllRoles();
+            foreach (var role in roles)
+            {
+                if(UserRoles.IndexOf(role.Value) < 0)
+                {
+                    AvaliableRoles.Add(role.Value);
+                }
+            }
+        }
+
+        public async Task AddSelectedRole()
+        {
+            await _userEndPoint.AddUserRole(SelectedUser.Id, SelectedAvaliableRole);
+            UserRoles.Add(SelectedAvaliableRole);
+            AvaliableRoles.Remove(SelectedAvaliableRole);
+        }
+
+        public async Task RemoveSelectedRole()
+        {
+            await _userEndPoint.RemoveUserFromRole(SelectedUser.Id, SelectedRoleToRemove);
+            AvaliableRoles.Add(SelectedRoleToRemove);
+            UserRoles.Remove(SelectedRoleToRemove);
+        }
     }
 }

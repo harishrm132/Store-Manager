@@ -54,5 +54,44 @@ namespace StoreDataManager.Controllers
             return output;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [Route("api/User/Admin/GetAllRoles")]
+        public Dictionary<string, string> GetAllRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
+                return roles;
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("api/User/Admin/AddRole")]
+        public void AddRole(UserRolePairModel pair)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userstore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userstore);
+
+                userManager.AddToRole(pair.UserId, pair.RoleName);
+            }
+        }
+        
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("api/User/Admin/RemoveRole")]
+        public void RemoveRole(UserRolePairModel pair)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userstore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userstore);
+
+                userManager.RemoveFromRole(pair.UserId, pair.RoleName);
+            }
+        }
     }
 }

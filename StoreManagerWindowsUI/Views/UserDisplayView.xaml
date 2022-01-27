@@ -32,7 +32,7 @@
 
         <!--0.Product-->
         <TextBlock Text="Users" Grid.Row="1" Grid.Column="0" Margin="0 0 0 5" />
-        <ListBox x:Name="Users" SelectedItem="{Binding SelectedProduct}"
+        <ListBox x:Name="Users" SelectedItem="{Binding SelectedUser}"
                  Grid.Row="2" Grid.Column="0" Grid.RowSpan="3" 
                  MinHeight="200" MinWidth="150" >
             <ListBox.ItemTemplate>
@@ -45,7 +45,21 @@
             </ListBox.ItemTemplate>
         </ListBox>
         
-        
+        <!--1.-->
+        <StackPanel Orientation="Vertical"  Grid.Row="1" Grid.Column="1" 
+                    Grid.RowSpan="3" Margin="20 0 0 0" >
+            <TextBlock x:Name="SelectedUserName" Margin="0 0 0 10" />
+            <TextBlock  Text="Current Roles" />
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                <ListBox x:Name="UserRoles" SelectedItem="{Binding SelectedRoleToRemove}" />
+                <Button x:Name="RemoveSelectedRole" Content="Remove" Margin="5 0 0 0" /> 
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="AvaliableRoles" />
+                <!--Auto Naming Selected Item as 'SelectedAvaliableRole'-->
+                <Button x:Name="AddSelectedRole" Content="Add Role" Margin="5 0 0 0" />
+            </StackPanel>
+        </StackPanel>
        
 
 
