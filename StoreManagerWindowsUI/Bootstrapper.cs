@@ -49,7 +49,8 @@ namespace StoreManagerWindowsUI
 
             _container.Instance(_container)
                 .PerRequest<IProductEndPoint, ProductEndPoint>()
-                .PerRequest<ISaleEndPoint, SaleEndPoint>();
+                .PerRequest<ISaleEndPoint, SaleEndPoint>()
+                .PerRequest<IUserEndPoint, UserEndPoint>();
 
             //Use Dependency Injection using simple container of Caliburn Micro
             _container
