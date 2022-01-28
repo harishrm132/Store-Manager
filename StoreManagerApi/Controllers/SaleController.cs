@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using StoreDataManager.Library.DataAccess;
 using StoreDataManager.Library.Models;
 using System;
@@ -16,12 +17,19 @@ namespace StoreManagerApi.Controllers
     [ApiController]
     public class SaleController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+
+        public SaleController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         [Authorize(Roles = "Cashier")]
         [HttpPost]
         public void Post(SaleModel sale)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            SaleData saleData = new SaleData();
+            SaleData saleData = new SaleData(configuration);
             saleData.SaveSale(sale, userId);
         }
 
@@ -29,7 +37,7 @@ namespace StoreManagerApi.Controllers
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
         {
-            SaleData data = new SaleData();
+            SaleData data = new SaleData(configuration);
             return data.GetSaleReport();
         }
     }

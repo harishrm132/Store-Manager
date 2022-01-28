@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using StoreDataManager.Library.DataAccess;
 using StoreDataManager.Library.Models;
 using System;
@@ -15,10 +16,17 @@ namespace StoreManagerApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+
+        public ProductController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         [HttpGet]
         public List<ProductModel> Get()
         {
-            ProductData data = new ProductData();
+            ProductData data = new ProductData(configuration);
             return data.GetProducts();
         }
     }

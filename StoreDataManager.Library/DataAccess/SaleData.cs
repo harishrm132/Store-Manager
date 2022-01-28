@@ -1,4 +1,5 @@
-﻿using StoreDataManager.Library.Internal.DataAccess;
+﻿using Microsoft.Extensions.Configuration;
+using StoreDataManager.Library.Internal.DataAccess;
 using StoreDataManager.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,19 @@ namespace StoreDataManager.Library.DataAccess
 {
     public class SaleData
     {
+        private readonly IConfiguration configuration;
+
+        public SaleData(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             //TODO - Make this method Better
             //Start Filling in the model we will save to the database
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
-            ProductData products = new ProductData();
+            ProductData products = new ProductData(configuration);
             var taxRate = ConfigHelper.GetTaxRate()/100;
 
             foreach (var item in saleInfo.SaleDetails)
@@ -51,7 +59,7 @@ namespace StoreDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             //Save the sale model
-            using (SqlDataAccess sql = new SqlDataAccess())
+            using (SqlDataAccess sql = new SqlDataAccess(configuration))
             {
                 try
                 {
@@ -81,7 +89,7 @@ namespace StoreDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess();
+            SqlDataAccess sql = new SqlDataAccess(configuration);
             return sql.LoadData<SaleReportModel, dynamic>("[dbo].[spSale_SaleReport]", new { }, "StoreData");
         }
     }
