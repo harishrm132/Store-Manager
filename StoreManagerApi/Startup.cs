@@ -12,6 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace StoreManagerApi
 {
@@ -35,6 +39,32 @@ namespace StoreManagerApi
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            //Configuration for taking the token and check you are valid (not expired)
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "JwtBearer";
+                option.DefaultChallengeScheme = "JwtBearer";
+            }).AddJwtBearer("JwtBearer", JwtBearerOptions =>
+            {
+                JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecret")),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+            });
+            //Add Swagger
+            services.AddSwaggerGen(setup =>
+            {
+                setup.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Store Manager API",
+                    Version = "v1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +88,12 @@ namespace StoreManagerApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "Store Manager API v1");
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -43,7 +43,7 @@ namespace StoreManagerApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/GetAllUsers")]
+        [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
         {
             List<ApplicationUserModel> output = new List<ApplicationUserModel>();
@@ -73,7 +73,7 @@ namespace StoreManagerApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/GetAllRoles")]
+        [Route("Admin/GetAllRoles")]
         public Dictionary<string, string> GetAllRoles()
         {
             var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
@@ -82,7 +82,7 @@ namespace StoreManagerApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/AddRole")]
+        [Route("Admin/AddRole")]
         public async Task AddRoleAsync(UserRolePairModel pair)
         {
             var iUser = await userManager.FindByIdAsync(pair.UserId);
@@ -91,7 +91,7 @@ namespace StoreManagerApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/RemoveRole")]
+        [Route("Admin/RemoveRole")]
         public async Task RemoveRoleAsync(UserRolePairModel pair)
         {
             var iUser = await userManager.FindByIdAsync(pair.UserId);
