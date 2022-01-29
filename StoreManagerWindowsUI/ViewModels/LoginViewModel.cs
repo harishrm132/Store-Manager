@@ -24,7 +24,7 @@ namespace StoreManagerWindowsUI.ViewModels
             _eventAggregator = eventAggregator;
 
             #if DEBUG
-                _userName = "test@gmil.com";
+                _userName = "test@gmail.com";
                 _password = "Password@123";
             #endif
         }
@@ -97,7 +97,7 @@ namespace StoreManagerWindowsUI.ViewModels
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
 
                 //Raise an event - Differ Event from other calls
-                _eventAggregator.PublishOnUIThread(new LogOnEvent());
+                await _eventAggregator.PublishOnUIThreadAsync(new LogOnEvent());
             }
             catch (Exception ex)
             {

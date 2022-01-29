@@ -129,9 +129,9 @@ namespace StoreManagerWindowsUI.ViewModels
                 settings.Title = "System Error";
 
                 _status.UpdateMessage("Exception", ex.Message);
-                _window.ShowDialog(_status, null, settings);
+                await _window.ShowDialogAsync(_status, null, settings);
 
-                TryClose();
+                TryCloseAsync();
             }
         }
 
