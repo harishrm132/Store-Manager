@@ -3,6 +3,7 @@ using StoreDataManager.Library.Internal.DataAccess;
 using StoreDataManager.Library.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,13 +19,25 @@ namespace StoreDataManager.Library.DataAccess
             this.configuration = configuration;
         }
 
+        public decimal GetTaxRate()
+        {
+            string rateText = configuration.GetSection("TaxRate").Value;
+                
+            bool IsValid = decimal.TryParse(rateText, out decimal output);
+            if (IsValid == false)
+            {
+                throw new ConfigurationErrorsException("Tax rate is not set up propery in App Config");
+            }
+            return output;
+        }
+
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             //TODO - Make this method Better
             //Start Filling in the model we will save to the database
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
             ProductData products = new ProductData(configuration);
-            var taxRate = ConfigHelper.GetTaxRate()/100;
+            var taxRate = GetTaxRate()/100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
