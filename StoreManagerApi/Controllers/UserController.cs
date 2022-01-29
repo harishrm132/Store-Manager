@@ -23,22 +23,21 @@ namespace StoreManagerApi.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<IdentityUser> userManager;
-        private readonly IConfiguration configuration;
+        private readonly IUserData userData;
 
         public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager,
-            IConfiguration configuration)
+            IUserData userData)
         {
             this.context = context;
             this.userManager = userManager;
-            this.configuration = configuration;
+            this.userData = userData;
         }
 
         [HttpGet]
         public UserModel GetById()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserData data = new UserData(configuration);
-            return data.GetUserById(userId).First();
+            return userData.GetUserById(userId).First();
         }
 
         [HttpGet]

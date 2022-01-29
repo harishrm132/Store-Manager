@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace StoreDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         public SqlDataAccess(IConfiguration configuration)
         {
@@ -33,7 +33,7 @@ namespace StoreDataManager.Library.Internal.DataAccess
                 return rows;
             }
         }
-        
+
         public void SaveData<U>(string storedProcedure, U paramaters, string connStringName)
         {
             string connString = GetConnectionString(connStringName);

@@ -15,19 +15,18 @@ namespace StoreManagerApi.Controllers
     [ApiController]
     public class InventoryController : ControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly IInventoryData inventoryData;
 
-        public InventoryController(IConfiguration configuration)
+        public InventoryController(IInventoryData inventoryData)
         {
-            this.configuration = configuration;
+            this.inventoryData = inventoryData;
         }
 
         [Authorize(Roles = "Manager,Admin")]
         [HttpGet]
         public List<InventoryModel> Get()
         {
-            InventoryData data = new InventoryData(configuration);
-            return data.GetInvetory();
+            return inventoryData.GetInvetory();
         }
 
         //[Authorize(Roles = "WarehouseWorker")]
@@ -35,8 +34,7 @@ namespace StoreManagerApi.Controllers
         [HttpPost]
         public void Post(InventoryModel item)
         {
-            InventoryData data = new InventoryData(configuration);
-            data.SaveInvetory(item);
+            inventoryData.SaveInvetory(item);
         }
     }
 }

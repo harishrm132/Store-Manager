@@ -17,11 +17,11 @@ namespace StoreManagerApi.Controllers
     [ApiController]
     public class SaleController : ControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly ISaleData saleData;
 
-        public SaleController(IConfiguration configuration)
+        public SaleController(ISaleData saleData)
         {
-            this.configuration = configuration;
+            this.saleData = saleData;
         }
 
         [Authorize(Roles = "Cashier")]
@@ -29,7 +29,6 @@ namespace StoreManagerApi.Controllers
         public void Post(SaleModel sale)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            SaleData saleData = new SaleData(configuration);
             saleData.SaveSale(sale, userId);
         }
 
@@ -38,8 +37,7 @@ namespace StoreManagerApi.Controllers
         [HttpGet]
         public List<SaleReportModel> GetSalesReport()
         {
-            SaleData data = new SaleData(configuration);
-            return data.GetSaleReport();
+            return saleData.GetSaleReport();
         }
     }
 }

@@ -16,18 +16,17 @@ namespace StoreManagerApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly IProductData productData;
 
-        public ProductController(IConfiguration configuration)
+        public ProductController(IProductData productData)
         {
-            this.configuration = configuration;
+            this.productData = productData;
         }
 
         [HttpGet]
         public List<ProductModel> Get()
         {
-            ProductData data = new ProductData(configuration);
-            return data.GetProducts();
+            return productData.GetProducts();
         }
     }
 }

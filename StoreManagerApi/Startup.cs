@@ -16,6 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using StoreDataManager.Library.DataAccess;
+using StoreDataManager.Library.Internal.DataAccess;
 
 namespace StoreManagerApi
 {
@@ -39,6 +41,14 @@ namespace StoreManagerApi
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //Personal Services
+            services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+            services.AddTransient<IInventoryData, InventoryData>();
+            services.AddTransient<IProductData, ProductData>();
+            services.AddTransient<ISaleData, SaleData>();
+            services.AddTransient<IUserData, UserData>();
+
             //Configuration for taking the token and check you are valid (not expired)
             services.AddAuthentication(option =>
             {

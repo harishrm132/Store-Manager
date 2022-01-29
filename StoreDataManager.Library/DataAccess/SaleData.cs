@@ -10,19 +10,23 @@ using System.Threading.Tasks;
 
 namespace StoreDataManager.Library.DataAccess
 {
-    public class SaleData
+    public class SaleData : ISaleData
     {
         private readonly IConfiguration configuration;
+        private readonly ISqlDataAccess sql;
+        private readonly IProductData productData;
 
-        public SaleData(IConfiguration configuration)
+        public SaleData(IConfiguration configuration, ISqlDataAccess sql, IProductData productData)
         {
             this.configuration = configuration;
+            this.sql = sql;
+            this.productData = productData;
         }
 
         public decimal GetTaxRate()
         {
             string rateText = configuration.GetSection("TaxRate").Value;
-                
+
             bool IsValid = decimal.TryParse(rateText, out decimal output);
             if (IsValid == false)
             {
@@ -36,8 +40,7 @@ namespace StoreDataManager.Library.DataAccess
             //TODO - Make this method Better
             //Start Filling in the model we will save to the database
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
-            ProductData products = new ProductData(configuration);
-            var taxRate = GetTaxRate()/100;
+            var taxRate = GetTaxRate() / 100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
@@ -48,7 +51,7 @@ namespace StoreDataManager.Library.DataAccess
                 };
 
                 //Get the information about this product
-                var productInfo = products.GetProductById(detail.ProductId);
+                var productInfo = productData.GetProductById(detail.ProductId);
                 if (productInfo == null)
                 {
                     throw new Exception($"The Product Id {detail.ProductId} could not be found in DB.");
@@ -72,37 +75,34 @@ namespace StoreDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             //Save the sale model
-            using (SqlDataAccess sql = new SqlDataAccess(configuration))
+            try
             {
-                try
-                {
-                    sql.StartTransaction("StoreData");
-                    sql.SaveDataInTransaction<SaleDBModel>("dbo.spSale_Insert", sale);
+                sql.StartTransaction("StoreData");
+                sql.SaveDataInTransaction<SaleDBModel>("dbo.spSale_Insert", sale);
 
-                    //Get the ID from Sale Model
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup",
-                        new { CashierId = sale.CashierId, SaleDate = sale.SaleDate }).FirstOrDefault();
+                //Get the ID from Sale Model
+                sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup",
+                    new { CashierId = sale.CashierId, SaleDate = sale.SaleDate }).FirstOrDefault();
 
-                    //Finish filling in sale details model
-                    foreach (var item in details)
-                    {
-                        item.SaleId = sale.Id;
-                        //Save the sale detail model
-                        sql.SaveDataInTransaction<SaleDetailDBModel>("dbo.spSaleDetail_Insert", item);
-                    }
-                    sql.CommitTransaction();
-                }
-                catch
+                //Finish filling in sale details model
+                foreach (var item in details)
                 {
-                    sql.RollBackTransaction();
-                    throw;
+                    item.SaleId = sale.Id;
+                    //Save the sale detail model
+                    sql.SaveDataInTransaction<SaleDetailDBModel>("dbo.spSaleDetail_Insert", item);
                 }
+                sql.CommitTransaction();
             }
+            catch
+            {
+                sql.RollBackTransaction();
+                throw;
+            }
+
         }
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(configuration);
             return sql.LoadData<SaleReportModel, dynamic>("[dbo].[spSale_SaleReport]", new { }, "StoreData");
         }
     }

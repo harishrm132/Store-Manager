@@ -9,24 +9,22 @@ using System.Threading.Tasks;
 
 namespace StoreDataManager.Library.DataAccess
 {
-    public class InventoryData
+    public class InventoryData : IInventoryData
     {
-        private readonly IConfiguration configuration;
+        private readonly ISqlDataAccess sql;
 
-        public InventoryData(IConfiguration configuration)
+        public InventoryData(ISqlDataAccess sql)
         {
-            this.configuration = configuration;
+            this.sql = sql;
         }
 
         public List<InventoryModel> GetInvetory()
         {
-            SqlDataAccess sql = new SqlDataAccess(configuration);
             return sql.LoadData<InventoryModel, dynamic>("[dbo].[spInventory_GetAll]", new { }, "StoreData");
         }
 
         public void SaveInvetory(InventoryModel item)
         {
-            SqlDataAccess sql = new SqlDataAccess(configuration);
             sql.SaveData("[dbo].[spInventory_Insert]", item, "StoreData");
         }
     }

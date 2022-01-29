@@ -9,19 +9,17 @@ using System.Threading.Tasks;
 
 namespace StoreDataManager.Library.DataAccess
 {
-    public class UserData
+    public class UserData : IUserData
     {
-        private readonly IConfiguration configuration;
+        private readonly ISqlDataAccess sql;
 
-        public UserData(IConfiguration configuration)
+        public UserData(ISqlDataAccess sql)
         {
-            this.configuration = configuration;
+            this.sql = sql;
         }
 
         public List<UserModel> GetUserById(string id)
         {
-            SqlDataAccess sql = new SqlDataAccess(configuration);
-
             var p = new { Id = id };
             var output = sql.LoadData<UserModel, dynamic>("dbo.[spUserLookup]", p, "StoreData");
             return output;
