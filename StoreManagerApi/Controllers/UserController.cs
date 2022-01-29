@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using StoreDataManager.Library.DataAccess;
 using StoreDataManager.Library.Models;
 using StoreManagerApi.Data;
@@ -24,13 +25,15 @@ namespace StoreManagerApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly UserManager<IdentityUser> userManager;
         private readonly IUserData userData;
+        private readonly ILogger logger;
 
         public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager,
-            IUserData userData)
+            IUserData userData, ILogger logger)
         {
             this.context = context;
             this.userManager = userManager;
             this.userData = userData;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -84,7 +87,10 @@ namespace StoreManagerApi.Controllers
         [Route("Admin/AddRole")]
         public async Task AddRoleAsync(UserRolePairModel pair)
         {
+            string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var iUser = await userManager.FindByIdAsync(pair.UserId);
+            logger.LogInformation("Admin {Admin} to add user {User} to role {Role}", loggedInUserId, iUser.Id, pair.RoleName);
+
             await userManager.AddToRoleAsync(iUser, pair.RoleName);
         }
 
@@ -93,7 +99,10 @@ namespace StoreManagerApi.Controllers
         [Route("Admin/RemoveRole")]
         public async Task RemoveRoleAsync(UserRolePairModel pair)
         {
+            string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var iUser = await userManager.FindByIdAsync(pair.UserId);
+            logger.LogInformation("Admin {Admin} to add user {User} to role {Role}", loggedInUserId, iUser.Id, pair.RoleName);
+
             await userManager.RemoveFromRoleAsync(iUser, pair.RoleName);
         }
     }

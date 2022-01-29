@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,9 +14,10 @@ namespace StoreDataManager.Library.Internal.DataAccess
 {
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
-        public SqlDataAccess(IConfiguration configuration)
+        public SqlDataAccess(IConfiguration configuration, ILogger<SqlDataAccess> logger)
         {
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public string GetConnectionString(string name)
@@ -75,6 +77,7 @@ namespace StoreDataManager.Library.Internal.DataAccess
 
         private bool isClosed = false;
         private readonly IConfiguration configuration;
+        private readonly ILogger<SqlDataAccess> logger;
 
         public void CommitTransaction()
         {
@@ -98,9 +101,9 @@ namespace StoreDataManager.Library.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch
+                catch(Exception ex)
                 {
-                    //TODO - Log this Issue
+                    logger.LogError(ex, "Commit Transaction Failed in Dispose Method");
                 }
             }
 
