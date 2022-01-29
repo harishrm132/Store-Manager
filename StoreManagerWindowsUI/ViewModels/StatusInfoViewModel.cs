@@ -23,7 +23,7 @@ namespace StoreManagerWindowsUI.ViewModels
 
         public void Close()
         {
-            TryClose();
+            TryCloseAsync();
         }
     }
 }
